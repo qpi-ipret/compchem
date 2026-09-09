@@ -1,0 +1,55 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="계산화학 및 분자모델링 도구 초보자를 위한 실전 가이드"><title>ORCA | 계산화학 도구 입문 가이드</title><link rel="stylesheet" href="../assets/css/style.css"></head><body><header class="site-header"><div class="container nav-inner"><a class="logo" href="../index.html">계산화학 도구 입문 가이드</a><button class="menu-toggle" aria-label="메뉴 열기" aria-expanded="false">Menu</button><nav class="site-nav"><a href="../start-here.html">Start Here</a><a href="../tools/index.html" aria-current="page">Tools</a><a href="../reference/quick-reference.html">Reference</a><a href="../troubleshooting/index.html">Troubleshooting</a><a href="../about/index.html">About</a></nav></div></header><main><div class="container breadcrumb">Tools &gt; ORCA</div><div class="container layout"><aside class="sidebar"><h3>ORCA</h3><a href="#overview">Overview</a><a href="#before">Before You Start</a><a href="#input">Input Structure</a><a href="#running">Running ORCA</a><a href="#sp">Single Point Energy</a><a href="#opt">Geometry Optimization</a><a href="#freq">Frequency Calculation</a><a href="#results">Reading Results</a><a href="#quick">Quick Start</a><a href="#problems">Common Problems</a><a href="#reference">Quick Reference</a></aside><article class="content"><section id="top"><h1>ORCA</h1><p class="page-intro">분자의 에너지, 구조, 진동, 전자구조 등을 계산하는 양자화학 프로그램입니다.</p><div class="meta-panel"><div><span class="meta-label">Tested environment</span>ORCA 6.1.1 · Windows</div><div><span class="meta-label">시작 전에</span>.inp 파일</div><div><span class="meta-label">주요 결과</span>.out · .gbw · .xyz · .hess</div></div><div class="beginner-path"><strong>처음이라면</strong><br>Overview → Quick Start → Common Problems 순서로 먼저 읽어도 됩니다.</div></section><section id="overview"><h2>Overview</h2><p>ORCA는 사용자가 작성한 input 파일을 기반으로 분자의 에너지, 구조, 진동, 전자구조 등을 계산하는 양자화학 프로그램입니다.</p><div class="workflow"><span>Structure</span>→<span>Input (.inp)</span>→<span>ORCA</span>→<span>Output (.out)</span>→<span>Analysis</span></div></section><section id="before"><h2>Before You Start</h2><table><tr><th>필요 요소</th><th>역할</th></tr><tr><td>ORCA executable</td><td>계산 수행</td></tr><tr><td>.inp</td><td>계산 조건과 구조 입력</td></tr><tr><td>.out</td><td>텍스트 결과 확인</td></tr><tr><td>.gbw / .xyz / .hess</td><td>계산 종류에 따라 생성되는 주요 결과 파일</td></tr></table></section><section id="input"><h2>Input Structure</h2><div class="code-box">
+<div class="code-head"><span>ORCA Input</span><button class="copy-btn" type="button" aria-label="코드 복사">Copy</button></div>
+<pre><code class="language-text">! HF def2-SVP SP
+
+* xyz 0 1
+O 0.0000 0.0000 0.0626
+H -0.7920 0.0000 -0.4973
+H 0.7920 0.0000 -0.4973
+*</code></pre>
+</div><table><tr><th>부분</th><th>의미</th></tr><tr><td>HF</td><td>Method</td></tr><tr><td>def2-SVP</td><td>Basis set</td></tr><tr><td>SP</td><td>Calculation type</td></tr><tr><td>0</td><td>Total charge</td></tr><tr><td>1</td><td>Multiplicity</td></tr></table><div class="box why"><strong>Why?</strong><p>Input 구조를 이해하면 어떤 조건으로 계산했는지 재현하고 결과를 해석할 수 있습니다.</p></div></section><section id="running"><h2>Running ORCA</h2><div class="code-box">
+<div class="code-head"><span>Command</span><button class="copy-btn" type="button" aria-label="코드 복사">Copy</button></div>
+<pre><code class="language-bash">orca water.inp &gt; water.out</code></pre>
+</div><figure class="figure">
+<img src="../assets/images/orca/orc-b01-img01-run-command.png" alt="Windows Command Prompt에서 ORCA 계산을 실행하는 화면" loading="lazy">
+<figcaption>Windows Command Prompt에서 ORCA 계산을 실행하는 화면</figcaption>
+</figure><div class="box success"><strong>정상적으로 되었다면</strong><p>Output 마지막에 <code>ORCA TERMINATED NORMALLY</code>가 표시됩니다.</p></div><figure class="figure">
+<img src="../assets/images/orca/orc-b01-img03-normal-termination.png" alt="ORCA 정상 종료 메시지" loading="lazy">
+<figcaption>ORCA 정상 종료 메시지</figcaption>
+</figure></section><section id="sp"><h2>Single Point Energy</h2><p>현재 주어진 geometry를 바꾸지 않고 해당 구조의 에너지를 계산합니다.</p><div class="code-box">
+<div class="code-head"><span>Keyword</span><button class="copy-btn" type="button" aria-label="코드 복사">Copy</button></div>
+<pre><code class="language-text">! HF def2-SVP SP</code></pre>
+</div><figure class="figure">
+<img src="../assets/images/orca/orc-b02-img01-final-single-point-energy.png" alt="Single Point 계산의 최종 에너지 출력" loading="lazy">
+<figcaption>Single Point 계산의 최종 에너지 출력</figcaption>
+</figure></section><section id="opt"><h2>Geometry Optimization</h2><p>초기 구조에서 출발해 에너지가 낮아지는 방향으로 원자 좌표를 반복적으로 변경합니다.</p><div class="code-box">
+<div class="code-head"><span>Keyword</span><button class="copy-btn" type="button" aria-label="코드 복사">Copy</button></div>
+<pre><code class="language-text">! HF def2-SVP Opt</code></pre>
+</div><figure class="figure">
+<img src="../assets/images/orca/orc-b02-img02-optimization-converged.png" alt="Geometry optimization convergence 확인" loading="lazy">
+<figcaption>Geometry optimization convergence 확인</figcaption>
+</figure><div class="box caution"><strong>중요</strong><p><code>ORCA TERMINATED NORMALLY</code>와 <code>THE OPTIMIZATION HAS CONVERGED</code>는 서로 다른 확인 사항입니다. Optimization이 수렴해도 그 구조가 minimum인지 확인하려면 Frequency 계산이 필요할 수 있습니다.</p></div></section><section id="freq"><h2>Frequency Calculation</h2><p>최적화된 구조의 진동 mode를 계산하고 minimum 여부를 확인하는 데 사용할 수 있습니다.</p><div class="code-box">
+<div class="code-head"><span>Keyword</span><button class="copy-btn" type="button" aria-label="코드 복사">Copy</button></div>
+<pre><code class="language-text">! HF def2-SVP Freq</code></pre>
+</div><figure class="figure">
+<img src="../assets/images/orca/orc-b03-img01-vibrational-frequencies.png" alt="Vibrational frequencies 출력" loading="lazy">
+<figcaption>Vibrational frequencies 출력</figcaption>
+</figure><table><tr><th>결과</th><th>기본 해석</th></tr><tr><td>의미 있는 음의 mode 없음</td><td>Minimum과 일치</td></tr><tr><td>음의 mode 1개</td><td>Transition state 가능성</td></tr><tr><td>여러 음의 mode</td><td>Higher-order saddle point 또는 구조 문제 가능성</td></tr></table><div class="box caution"><strong>주의</strong><p>0에 매우 가까운 작은 음수는 numerical noise나 병진·회전 mode 영향일 수 있습니다.</p></div></section><section id="results"><h2>Reading Results</h2><h3>Orbital energy</h3><figure class="figure">
+<img src="../assets/images/orca/orc-b04-img01-orbital-energies.png" alt="ORBITAL ENERGIES 출력" loading="lazy">
+<figcaption>ORBITAL ENERGIES 출력</figcaption>
+</figure><p>닫힌 껍질 계산에서는 마지막 occupied orbital을 HOMO, 첫 unoccupied orbital을 LUMO로 읽을 수 있습니다.</p><div class="box caution"><strong>주의</strong><p>HOMO–LUMO orbital-energy gap을 실험적 광학 excitation energy와 동일하게 해석하면 안 됩니다.</p></div><h3>Atomic charge</h3><figure class="figure">
+<img src="../assets/images/orca/orc-b04-img02-mulliken-charges.png" alt="Mulliken atomic charges" loading="lazy">
+<figcaption>Mulliken atomic charges</figcaption>
+</figure><figure class="figure">
+<img src="../assets/images/orca/orc-b04-img03-loewdin-charges.png" alt="Löwdin atomic charges" loading="lazy">
+<figcaption>Löwdin atomic charges</figcaption>
+</figure><div class="box why"><strong>왜 값이 다르나요?</strong><p>Atomic partial charge는 전자밀도를 원자에 분배하는 분석 방법에 따라 달라질 수 있습니다. 비교할 때는 같은 계산 조건과 같은 charge scheme을 유지하는 것이 좋습니다.</p></div><h3>빠르게 찾기</h3><table><tr><th>확인 목적</th><th>Output 검색어</th></tr><tr><td>최종 에너지</td><td>FINAL SINGLE POINT ENERGY</td></tr><tr><td>정상 종료</td><td>ORCA TERMINATED NORMALLY</td></tr><tr><td>Optimization 수렴</td><td>THE OPTIMIZATION HAS CONVERGED</td></tr><tr><td>진동수</td><td>VIBRATIONAL FREQUENCIES</td></tr><tr><td>Orbital</td><td>ORBITAL ENERGIES</td></tr></table></section><section id="quick"><h2>Quick Start</h2><ol class="steps"><li>작은 분자의 <code>.inp</code> 파일을 작성합니다.</li><li><code>SP</code> 계산을 실행하고 최종 에너지와 정상 종료를 확인합니다.</li><li><code>Opt</code>로 구조를 최적화하고 convergence를 확인합니다.</li><li>최종 <code>.xyz</code>를 이용해 <code>Freq</code> 계산을 수행합니다.</li><li>의미 있는 imaginary frequency가 없는지 확인합니다.</li></ol><div class="code-box">
+<div class="code-head"><span>External XYZ example</span><button class="copy-btn" type="button" aria-label="코드 복사">Copy</button></div>
+<pre><code class="language-text">! HF def2-SVP Freq
+
+* xyzfile 0 1 optimized.xyz
+</code></pre>
+</div><div class="box success"><strong>성공 기준</strong><p>SP energy, optimization convergence, vibrational frequencies, 정상 종료 메시지를 확인할 수 있습니다.</p></div></section><section id="problems"><h2>Common Problems</h2><h3>ORCA 명령을 찾지 못해요</h3><p>PATH에 등록되지 않았다면 실행 파일 전체 경로를 사용합니다.</p><div class="code-box">
+<div class="code-head"><span>Windows</span><button class="copy-btn" type="button" aria-label="코드 복사">Copy</button></div>
+<pre><code class="language-bash">C:\orca\orca.exe input.inp &gt; output.out</code></pre>
+</div><h3>존재하는 XYZ 파일을 못 읽어요</h3><p>파일 존재, 이름, 확장자와 <code>xyzfile</code> 문법을 확인합니다. ORCA 6.1.1 / Windows 테스트에서는 input 마지막에 빈 줄을 추가해 해결한 사례가 있었습니다.</p><h3>Optimization은 끝났는데 구조가 의심스러워요</h3><p><code>THE OPTIMIZATION HAS CONVERGED</code>와 Frequency 결과를 추가로 확인하세요.</p></section><section id="reference"><h2>Quick Reference</h2><table><tr><th>Keyword</th><th>의미</th></tr><tr><td>SP</td><td>Single Point</td></tr><tr><td>Opt</td><td>Geometry Optimization</td></tr><tr><td>Freq</td><td>Frequency</td></tr><tr><td>%pal</td><td>병렬 process 설정</td></tr><tr><td>%maxcore</td><td>process당 최대 메모리(MB)</td></tr><tr><td>* xyzfile ...</td><td>외부 XYZ 구조 읽기</td></tr></table></section></article></div></main><footer class="site-footer"><div class="container"><strong>계산화학 도구 입문 가이드</strong><p>Avogadro · ORCA · AutoDock Vina · AutoDockTools · PyMOL</p><div class="footer-links"><a href="../start-here.html">Start Here</a><a href="../reference/quick-reference.html">Quick Reference</a><a href="../about/index.html">About</a></div></div></footer><script src="../assets/js/main.js"></script></body></html>

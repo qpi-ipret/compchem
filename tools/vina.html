@@ -1,0 +1,49 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="계산화학 및 분자모델링 도구 초보자를 위한 실전 가이드"><title>AutoDock Vina + ADT | 계산화학 도구 입문 가이드</title><link rel="stylesheet" href="../assets/css/style.css"></head><body><header class="site-header"><div class="container nav-inner"><a class="logo" href="../index.html">계산화학 도구 입문 가이드</a><button class="menu-toggle" aria-label="메뉴 열기" aria-expanded="false">Menu</button><nav class="site-nav"><a href="../start-here.html">Start Here</a><a href="../tools/index.html" aria-current="page">Tools</a><a href="../reference/quick-reference.html">Reference</a><a href="../troubleshooting/index.html">Troubleshooting</a><a href="../about/index.html">About</a></nav></div></header><main><div class="container breadcrumb">Tools &gt; AutoDock Vina + ADT</div><div class="container layout"><aside class="sidebar"><h3>AutoDock Vina + ADT</h3><a href="#overview">Overview</a><a href="#terms">Docking 기본 용어</a><a href="#version">Version Note</a><a href="#ligand">Ligand Preparation</a><a href="#receptor">Receptor Preparation</a><a href="#search">Search Space</a><a href="#run">Running Vina</a><a href="#results">Reading Results</a><a href="#pymol">PyMOL로 연결</a><a href="#quick">Quick Start</a><a href="#problems">Common Problems</a><a href="#reference">Quick Reference</a></aside><article class="content"><section id="top"><h1>AutoDock Vina + ADT</h1><p class="page-intro">Receptor와 ligand를 준비하고 가능한 결합 pose를 탐색하는 molecular docking workflow입니다.</p><div class="meta-panel"><div><span class="meta-label">Tested environment</span>Vina 1.2.7 · MGLTools/ADT 1.5.7 · Windows</div><div><span class="meta-label">시작 전에</span>receptor/ligand 구조</div><div><span class="meta-label">주요 결과</span>PDBQT · docking poses · affinity</div></div><div class="beginner-path"><strong>처음이라면</strong><br>Overview → Quick Start → Common Problems 순서로 먼저 읽어도 됩니다.</div></section><section id="overview"><h2>Overview</h2><p>AutoDockTools는 docking 입력 구조를 준비하고, AutoDock Vina는 준비된 receptor와 ligand를 이용해 가능한 결합 pose를 탐색합니다. 결과는 PyMOL 등에서 분석할 수 있습니다.</p><div class="workflow"><span>Structure</span>→<span>ADT</span>→<span>PDBQT</span>→<span>Vina</span>→<span>PyMOL</span></div><figure class="figure">
+<img src="../assets/images/vina/vna-b01-img01-autodocktools-main-ui.png" alt="AutoDockTools 1.5.7의 기본 화면" loading="lazy">
+<figcaption>AutoDockTools 1.5.7의 기본 화면</figcaption>
+</figure></section><section id="terms"><h2>Docking 기본 용어</h2><table><tr><th>용어</th><th>의미</th></tr><tr><td>Receptor</td><td>Ligand가 결합할 대상 구조</td></tr><tr><td>Ligand</td><td>Docking할 상대적으로 작은 분자</td></tr><tr><td>Pose</td><td>예측된 ligand의 위치·방향·conformation</td></tr><tr><td>Search Space</td><td>Ligand가 탐색할 3D 영역</td></tr><tr><td>Affinity</td><td>Vina scoring function이 pose를 평가한 값</td></tr></table><div class="box caution"><strong>Score 해석</strong><p>Vina affinity는 실험에서 직접 측정한 결합 자유에너지와 동일하지 않습니다. 같은 조건의 pose를 비교하는 scoring 값으로 이해하는 것이 안전합니다.</p></div></section><section id="version"><h2>Version Note</h2><p>이 가이드는 MGLTools / AutoDockTools 1.5.7의 GUI workflow를 실제로 검증한 내용을 기반으로 합니다. 최신 AutoDock Vina 생태계에서는 Meeko 기반 preparation도 널리 사용됩니다.</p></section><section id="ligand"><h2>Ligand Preparation</h2><p>작은 분자를 docking용 ligand PDBQT로 준비합니다.</p><ol class="steps"><li><code>File → Read Molecule</code>로 구조를 불러옵니다.</li><li><code>Edit → Charges → Compute Gasteiger</code>로 charge를 계산합니다.</li><li>필요한 hydrogen 상태를 확인하고 non-polar hydrogen을 병합합니다.</li><li><code>Ligand → Input → Choose...</code>로 ligand를 지정합니다.</li><li><code>Detect Root</code>와 <code>Choose Torsions...</code>에서 rotatable bond를 확인합니다.</li><li><code>Save as PDBQT...</code>로 저장합니다.</li></ol><figure class="figure">
+<img src="../assets/images/vina/vna-b02-img14-choose-torsions.png" alt="Ligand의 rotatable bond를 확인하는 화면" loading="lazy">
+<figcaption>Ligand의 rotatable bond를 확인하는 화면</figcaption>
+</figure><figure class="figure">
+<img src="../assets/images/vina/vna-b02-img15-save-ligand-pdbqt.png" alt="Ligand PDBQT 저장" loading="lazy">
+<figcaption>Ligand PDBQT 저장</figcaption>
+</figure><div class="box caution"><strong>주의</strong><p>Hydrogen은 많고 적음보다 실제 protonation state가 중요합니다. 입력 구조의 화학적 상태를 먼저 확인하세요.</p></div></section><section id="receptor"><h2>Receptor Preparation</h2><p>PDB 구조에는 water, ion, alternate conformer, cofactor 등이 포함될 수 있습니다. Docking 목적에 따라 필요한 요소를 판단한 뒤 receptor를 준비합니다.</p><figure class="figure">
+<img src="../assets/images/vina/vna-b03-img03-add-hydrogens-dialog.png" alt="Receptor에 polar hydrogen을 추가하는 설정" loading="lazy">
+<figcaption>Receptor에 polar hydrogen을 추가하는 설정</figcaption>
+</figure><p>ADT 1.5.7 기반 legacy workflow에서는 receptor에 Kollman charge를 할당하고 residue charge를 확인할 수 있습니다.</p><figure class="figure">
+<img src="../assets/images/vina/vna-b03-warn03-nonintegral-residue-charges.png" alt="Non-integral residue charge 경고" loading="lazy">
+<figcaption>Non-integral residue charge 경고</figcaption>
+</figure><figure class="figure">
+<img src="../assets/images/vina/vna-b03-img06-integral-residue-charges.png" alt="Charge 검증 완료 상태" loading="lazy">
+<figcaption>Charge 검증 완료 상태</figcaption>
+</figure><div class="box caution"><strong>중요</strong><p>Water, ion, cofactor를 항상 삭제하는 규칙은 없습니다. 활성 부위 금속이나 구조적으로 중요한 물처럼 유지해야 하는 요소도 있습니다.</p></div><figure class="figure">
+<img src="../assets/images/vina/vna-b03-img08-save-receptor-pdbqt.png" alt="Receptor PDBQT 저장" loading="lazy">
+<figcaption>Receptor PDBQT 저장</figcaption>
+</figure></section><section id="search"><h2>Search Space</h2><p>Ligand가 탐색할 영역을 중심 좌표와 크기로 지정합니다. 알려진 binding site나 active-site residue가 있다면 그 영역을 포함하도록 설정합니다.</p><figure class="figure">
+<img src="../assets/images/vina/vna-b04-img01-active-site-grid-box.png" alt="예시 receptor에서 search box를 설정한 화면" loading="lazy">
+<figcaption>예시 receptor에서 search box를 설정한 화면</figcaption>
+</figure><div class="box caution"><strong>ADT Grid와 Vina size를 혼동하지 마세요</strong><p>ADT의 grid point 수와 Vina의 <code>size_x/y/z</code>는 같은 값이 아닙니다. Vina의 size는 Å 단위의 물리적 크기입니다.</p></div></section><section id="run"><h2>Running Vina</h2><div class="code-box">
+<div class="code-head"><span>vina_config.txt</span><button class="copy-btn" type="button" aria-label="코드 복사">Copy</button></div>
+<pre><code class="language-text">receptor = receptor.pdbqt
+ligand = ligand.pdbqt
+
+center_x = 0
+center_y = 0
+center_z = 0
+
+size_x = 15
+size_y = 15
+size_z = 15
+
+exhaustiveness = 8
+num_modes = 9</code></pre>
+</div><div class="code-box">
+<div class="code-head"><span>Command</span><button class="copy-btn" type="button" aria-label="코드 복사">Copy</button></div>
+<pre><code class="language-bash">vina --config vina_config.txt --out docking_out.pdbqt</code></pre>
+</div><figure class="figure">
+<img src="../assets/images/vina/vna-b05-img01-vina-run-and-results.png" alt="AutoDock Vina 실행 설정과 결과 표" loading="lazy">
+<figcaption>AutoDock Vina 실행 설정과 결과 표</figcaption>
+</figure></section><section id="results"><h2>Reading Results</h2><table><tr><th>항목</th><th>의미</th></tr><tr><td>Mode</td><td>예측된 ligand pose 번호</td></tr><tr><td>Affinity</td><td>Vina scoring 값</td></tr><tr><td>RMSD l.b./u.b.</td><td>best mode와 다른 pose 사이 구조 차이의 lower/upper bound</td></tr></table><div class="box caution"><strong>주의</strong><p>Vina 결과표의 RMSD는 실험 구조와 계산 구조를 비교한 redocking RMSD와는 다른 값입니다.</p></div></section><section id="pymol"><h2>PyMOL로 연결</h2><p>Vina output은 여러 pose를 하나의 multi-model PDBQT에 담을 수 있습니다. PyMOL에서 pose가 기대한 방식으로 분리되지 않는다면 <code>vina_split</code>으로 개별 PDBQT를 만들 수 있습니다.</p><div class="code-box">
+<div class="code-head"><span>vina_split</span><button class="copy-btn" type="button" aria-label="코드 복사">Copy</button></div>
+<pre><code class="language-bash">vina_split --input docking_out.pdbqt</code></pre>
+</div></section><section id="quick"><h2>Quick Start</h2><ol class="steps"><li>Ligand를 PDBQT로 준비합니다.</li><li>Receptor를 PDBQT로 준비합니다.</li><li>Search space의 center와 size를 정합니다.</li><li><code>config.txt</code>를 작성합니다.</li><li>Vina를 실행해 mode/affinity 표와 output PDBQT를 확인합니다.</li></ol><div class="box success"><strong>성공 기준</strong><p><code>mode / affinity</code> 표가 출력되고 지정한 <code>output.pdbqt</code> 파일이 생성됩니다.</p></div></section><section id="problems"><h2>Common Problems</h2><h3>Vina 명령을 찾지 못해요</h3><p>PATH에 없다면 <code>vina.exe</code> 전체 경로를 사용합니다.</p><h3>Ligand PDBQT를 읽지 못해요</h3><p>실제 파일인지, 현재 작업 폴더에 있는지, <code>.pdbqt.txt</code> 또는 <code>.lnk</code>가 아닌지 확인합니다.</p><h3>Receptor charge 경고가 많아요</h3><p>강제로 보정하기 전에 alternate conformer, water/ion, missing atom, non-standard residue 등 입력 구조를 먼저 점검하세요.</p><h3>CPU warning이 떠요</h3><p>낮은 exhaustiveness에서 모든 CPU를 활용하기 어렵다는 성능 안내일 수 있으며 계산 실패를 의미하지는 않습니다.</p></section><section id="reference"><h2>Quick Reference</h2><table><tr><th>항목</th><th>의미</th></tr><tr><td>center_x/y/z</td><td>Search space 중심</td></tr><tr><td>size_x/y/z</td><td>Search space 크기(Å)</td></tr><tr><td>exhaustiveness</td><td>탐색량</td></tr><tr><td>num_modes</td><td>최대 출력 pose 수</td></tr><tr><td>--config</td><td>Configuration 파일 사용</td></tr><tr><td>--out</td><td>결과 PDBQT 지정</td></tr></table></section></article></div></main><footer class="site-footer"><div class="container"><strong>계산화학 도구 입문 가이드</strong><p>Avogadro · ORCA · AutoDock Vina · AutoDockTools · PyMOL</p><div class="footer-links"><a href="../start-here.html">Start Here</a><a href="../reference/quick-reference.html">Quick Reference</a><a href="../about/index.html">About</a></div></div></footer><script src="../assets/js/main.js"></script></body></html>
